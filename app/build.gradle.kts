@@ -72,4 +72,6 @@ dependencies {
     //kotlinx.coroutines.tasks.awaitへの依存関係
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    //coroutineScopeの依存関係
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

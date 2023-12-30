@@ -5,6 +5,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
@@ -30,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.coroutineScope
 
 
 class Navigation {
@@ -68,42 +70,62 @@ class Navigation {
     fun SecondScreen() {
         var location by remember { mutableStateOf("") }
         val context = LocalContext.current
+        var permissionGranted by remember { mutableStateOf(false) }
 
-        LaunchedEffect(true) {
-            // Composeスレッド外で非同期処理を実行
-            withContext(Dispatchers.IO) {
-                // 位置情報の取得を行うsuspend関数
-                val result = fetchLocation(context)
-
-                // ComposeスレッドでUIを更新
-                withContext(Dispatchers.Main) {
-                    location = result
-                }
-            }
+        // パーミッションのリクエスト
+        val requestPermissionLauncher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            // パーミッションの許可状態が変更されたら変数を更新
+            permissionGranted = isGranted
+            Log.d("SecondScreen", "パーミッションの許可状態が変更されて変数を更新")
         }
 
-        // パーミッションのリクエストを外に移動
-        requestLocationPermission(context) { isGranted ->
-            if (isGranted) {
-                // パーミッションが許可された場合の処理
-                // ここで再度位置情報を取得できるようにするなどの処理を行う
+        // パーミッションのリクエスト
+        LaunchedEffect(true) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            Log.d("SecondScreen", "requestPermissionLauncher.launch実行済み")
+        }
+
+        // パーミッションの許可状態が変更されたら非同期処理を開始
+        LaunchedEffect(permissionGranted) {
+            if (permissionGranted) {
+                withContext(Dispatchers.IO) {
+                    // 位置情報の取得を行うsuspend関数
+                    val result = fetchLocation(context)
+
+                    // ComposeスレッドでUIを更新
+                    withContext(Dispatchers.Main) {
+                        location = result
+                        Log.d("SecondScreen", "result:${location}")
+                        Log.d("SecondScreen", "UI更新true")
+                    }
+                }
             } else {
                 // パーミッションが拒否された場合の処理
                 // 必要に応じてユーザーにメッセージを表示するなどの対応を行う
+                location = "位置情報の取得には許可が必要です"
+                Log.d("SecondScreen", "UI更新false")
             }
         }
+        // UI を表示
+        Text(text = location)
     }
 
-    // Composeスレッド外で非同期処理を行うsuspend関数
+
+    // 非同期処理を行うsuspend関数
     suspend fun fetchLocation(context: Context): String {
+        // ここに非同期の処理を記述
         return withContext(Dispatchers.IO) {
-            // ここに非同期の処理を記述
             if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 try {
                     // 許可されている場合は位置情報を取得
                     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+                    Log.d("SecondScreen", "位置情報取得")
                     // 位置情報を非同期に取得
                     val lastLocation = fusedLocationClient.lastLocation.await()
+                    Log.d("SecondScreen", "位置情報を非同期に取得")
+                    Log.d("SecondScreen", "緯度: ${lastLocation.latitude}, 経度: ${lastLocation.longitude}")
                     "緯度: ${lastLocation.latitude}, 経度: ${lastLocation.longitude}"
                 } catch (exception: Exception) {
                     "位置情報の取得中にエラーが発生しました"
@@ -112,20 +134,6 @@ class Navigation {
                 // 許可されていない場合は許可を求める
                 ""
             }
-        }
-    }
-    @Composable
-    fun requestLocationPermission(
-        context: Context,
-        onPermissionResult: (Boolean) -> Unit
-    ) {
-        // パーミッションのリクエスト
-        val requestPermissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            onPermissionResult(isGranted)
-        }
-
-        LaunchedEffect(true) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
     }
 }
