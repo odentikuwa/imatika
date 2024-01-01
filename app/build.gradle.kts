@@ -3,6 +3,14 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+buildscript {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+        }
+    }
+}
+
 android {
     namespace = "com.example.imatika"
     compileSdk = 34
@@ -45,7 +53,7 @@ android {
         }
     }
 }
-
+val version = "2.3.7"
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -70,8 +78,14 @@ dependencies {
     //Activity への依存関係
     implementation("androidx.activity:activity-ktx:1.8.2")
     //kotlinx.coroutines.tasks.awaitへの依存関係
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$version")
     //coroutineScopeの依存関係
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$version")
+    //httpリクエストの依存関係
+    implementation("androidx.startup:startup-runtime:1.1.1")
+    implementation("io.ktor:ktor-client-core:$version")
+    implementation("io.ktor:ktor-client-cio:$version")
+    implementation("io.ktor:ktor-client-android:$version")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
 }

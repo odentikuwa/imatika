@@ -1,4 +1,8 @@
 pluginManagement {
+    plugins {
+        kotlin("android") version "1.5.21"
+        kotlin("androidx.navigation") version "2.4.0"
+    }
     repositories {
         google()
         mavenCentral()

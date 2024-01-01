@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- stringがリソースIDになります -->
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAj7yTbWbbeD5J_M7P9G5w6YECBo9KrPu4</string>
+</resources>

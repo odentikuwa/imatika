@@ -26,13 +26,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.coroutineScope
-
+import com.example.imatika.model.Restaurant
 
 class Navigation {
     @Composable
@@ -71,6 +72,7 @@ class Navigation {
         var location by remember { mutableStateOf("") }
         val context = LocalContext.current
         var permissionGranted by remember { mutableStateOf(false) }
+        var restaurants by remember { mutableStateOf(emptyList<Restaurant>()) }
 
         // パーミッションのリクエスト
         val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -99,6 +101,21 @@ class Navigation {
                         location = result
                         Log.d("SecondScreen", "result:${location}")
                         Log.d("SecondScreen", "UI更新true")
+
+                        // 緯度の取得
+                        val latitudeRegex = Regex("緯度: ([^,]+)")
+                        val latitudeMatch = latitudeRegex.find(result)
+                        val latitudeString = latitudeMatch?.groups?.get(1)?.value
+                        val latitude: Double? = latitudeString?.toDouble()
+
+                        // 経度の取得
+                        val longitudeRegex = Regex("経度: ([^,]+)")
+                        val longitudeMatch = longitudeRegex.find(result)
+                        val longitudeString = longitudeMatch?.groups?.get(1)?.value
+                        val longitude: Double? = longitudeString?.toDouble()
+
+                        // 周辺のグルメ情報を取得
+                        restaurants = getNearbyRestaurants(latitude = latitude,longitude = longitude)
                     }
                 }
             } else {
@@ -109,9 +126,12 @@ class Navigation {
             }
         }
         // UI を表示
-        Text(text = location)
+        Column {
+            Text(text = location)
+            // 周辺のグルメ情報を一覧表示
+            RestaurantList(restaurants)
+        }
     }
-
 
     // 非同期処理を行うsuspend関数
     suspend fun fetchLocation(context: Context): String {
@@ -133,6 +153,17 @@ class Navigation {
             } else {
                 // 許可されていない場合は許可を求める
                 ""
+            }
+        }
+    }
+
+    @Composable
+    fun RestaurantList(restaurants: List<Restaurant>) {
+        // ここにグルメ情報の一覧表示の UI コンポーネントを実装
+        // restaurants リストを受け取って、それぞれのレストランの情報を表示する
+        LazyColumn {
+            items(restaurants) { restaurant ->
+                Text(text = "${restaurant.name} - ${restaurant.vicinity}")
             }
         }
     }
