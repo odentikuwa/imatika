@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import com.example.imatika.model.Restaurant
@@ -106,13 +105,13 @@ class Navigation {
                         val latitudeRegex = Regex("緯度: ([^,]+)")
                         val latitudeMatch = latitudeRegex.find(result)
                         val latitudeString = latitudeMatch?.groups?.get(1)?.value
-                        val latitude: Double? = latitudeString?.toDouble()
+                        val latitude: Double = latitudeString?.toDouble() ?: 0.0
 
                         // 経度の取得
                         val longitudeRegex = Regex("経度: ([^,]+)")
                         val longitudeMatch = longitudeRegex.find(result)
                         val longitudeString = longitudeMatch?.groups?.get(1)?.value
-                        val longitude: Double? = longitudeString?.toDouble()
+                        val longitude: Double = longitudeString?.toDouble() ?: 0.0
 
                         // 周辺のグルメ情報を取得
                         restaurants = getNearbyRestaurants(latitude = latitude,longitude = longitude)

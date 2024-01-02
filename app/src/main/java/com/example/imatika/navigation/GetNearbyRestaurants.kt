@@ -1,22 +1,15 @@
 package com.example.imatika.navigation
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Text
+import android.content.Context
 import androidx.compose.runtime.*
 import com.example.imatika.model.Restaurant
 import kotlinx.coroutines.*
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import kotlinx.coroutines.runBlocking
-import android.content.Context
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 // 近くのレストランを取得する関数
 suspend fun getNearbyRestaurants(

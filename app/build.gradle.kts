@@ -1,6 +1,8 @@
+val version = "2.3.7"
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-android")
 }
 
 buildscript {
@@ -9,6 +11,9 @@ buildscript {
             url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
         }
     }
+//    dependencies {
+//        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:$version")
+//    }
 }
 
 android {
@@ -43,6 +48,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // Kotlin Android Extensionsを有効にする
+        viewBinding = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
@@ -52,8 +59,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+//    viewBinding {
+//        enable = true
+//    }
 }
-val version = "2.3.7"
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -78,14 +88,18 @@ dependencies {
     //Activity への依存関係
     implementation("androidx.activity:activity-ktx:1.8.2")
     //kotlinx.coroutines.tasks.awaitへの依存関係
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$version")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     //coroutineScopeの依存関係
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     //httpリクエストの依存関係
     implementation("androidx.startup:startup-runtime:1.1.1")
     implementation("io.ktor:ktor-client-core:$version")
     implementation("io.ktor:ktor-client-cio:$version")
     implementation("io.ktor:ktor-client-android:$version")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+    // Kotlinプラグイン
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$version")
+    // Android Gradle Plugin
+    implementation("com.android.tools.build:gradle:7.0.0")
 }
