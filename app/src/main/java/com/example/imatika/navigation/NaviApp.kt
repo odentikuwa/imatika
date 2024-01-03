@@ -114,7 +114,7 @@ class Navigation {
                         val longitude: Double = longitudeString?.toDouble() ?: 0.0
 
                         // 周辺のグルメ情報を取得
-                        restaurants = getNearbyRestaurants(latitude = latitude,longitude = longitude)
+                        restaurants = getNearbyRestaurants(context = context, latitude = latitude,longitude = longitude)
                     }
                 }
             } else {

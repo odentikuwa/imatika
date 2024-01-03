@@ -64,7 +64,6 @@ android {
     composeOptions {
 
         kotlinCompilerExtensionVersion = "1.4.3"
-//        kotlinCompilerExtensionVersion = kotlinVersion
     }
 
     buildFeatures {
@@ -105,7 +104,7 @@ dependencies {
     implementation("io.ktor:ktor-client-core:$version")
     implementation("io.ktor:ktor-client-cio:$version")
     implementation("io.ktor:ktor-client-android:$version")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     // Kotlinプラグイン
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     // Android Gradle Plugin

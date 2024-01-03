@@ -1,18 +1,19 @@
 package com.example.imatika.navigation
 
 import android.content.Context
-import androidx.compose.runtime.*
+import com.example.imatika.R
 import com.example.imatika.model.Restaurant
-import kotlinx.coroutines.*
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
+import io.ktor.client.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+
 
 // 近くのレストランを取得する関数
 suspend fun getNearbyRestaurants(
+    context: Context, // contextをパラメータとして渡す
     latitude: Double,
     longitude: Double,
     radius: Int = 1000,
@@ -29,11 +30,14 @@ suspend fun getNearbyRestaurants(
     val client = HttpClient()
 
     try {
-        // HTTPリクエストを送信して結果を取得
-        val response: String = client.get(url)
+        // HTTPリクエストを送信してHttpResponseを取得
+        val response: HttpResponse = client.get(url)
+
+        // HttpResponseから文字列を取得
+        val responseString: String = response.bodyAsText()
 
         // 結果からレストラン情報を抽出
-        val results = Json { ignoreUnknownKeys = true }.decodeFromString<GooglePlacesResponse>(response).results
+        val results = Json { ignoreUnknownKeys = true }.decodeFromString<GooglePlacesResponse>(responseString).results
         val restaurants = mutableListOf<Restaurant>()
 
         for (place in results) {
