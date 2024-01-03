@@ -107,6 +107,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     // Kotlinプラグイン
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-    // Android Gradle Plugin
-    implementation("com.android.tools.build:gradle:7.1.0")
+    // JSON
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
