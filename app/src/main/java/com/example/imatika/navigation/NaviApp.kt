@@ -10,9 +10,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -127,7 +128,7 @@ class Navigation {
         Column {
             Text(text = location)
             // 周辺のグルメ情報を一覧表示
-//            RestaurantList(restaurants)
+            restaurantList(restaurants)
         }
     }
 
@@ -155,28 +156,28 @@ class Navigation {
         }
     }
 
-//    // RestaurantList コンポーネント
-//    @Composable
-//    fun RestaurantList(restaurants: List<Restaurant>) {
-//        LazyColumn {
-//            items(restaurants) { restaurant ->
-//                RestaurantItem(restaurant = restaurant)
-//            }
-//        }
-//    }
-//
-//    // RestaurantItem コンポーネント
-//    @Composable
-//    fun RestaurantItem(restaurant: Restaurant) {
-//        // 各レストランの情報を表示する UI コンポーネントを実装
-//        Column(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp)
-//        ) {
-//            Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-//            Text(text = restaurant.vicinity, fontSize = 14.sp)
-//        }
-//    }
+    // RestaurantList コンポーネント
+    @Composable
+    fun restaurantList(restaurants: List<Restaurant>) {
+        LazyColumn {
+            items(restaurants) { restaurant ->
+                RestaurantItem(restaurant = restaurant)
+            }
+        }
+    }
+
+    // RestaurantItem コンポーネント
+    @Composable
+    fun RestaurantItem(restaurant: Restaurant) {
+        // 各レストランの情報を表示する UI コンポーネントを実装
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Text(text = restaurant.vicinity, fontSize = 14.sp)
+        }
+    }
 }
 
