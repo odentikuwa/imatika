@@ -18,7 +18,7 @@ suspend fun getNearbyRestaurants(
     context: Context, // contextをパラメータとして渡す
     latitude: Double,
     longitude: Double,
-    radius: Int = 1000,
+    radius: Int = 1000, //円の半径をメートル単位で指定
 ): List<Restaurant> = runBlocking {
     // Google Places APIキー
     val apiKey = context.getString(R.string.google_maps_key) // ご自身のGoogle Places APIキーに置き換えてください
@@ -27,6 +27,7 @@ suspend fun getNearbyRestaurants(
             "&radius=$radius" +
             "&type=restaurant" +
             "&key=$apiKey"
+//            "&language=ja" // 日本語を指定
 
     return@runBlocking HttpClient().use { client ->
         try {
