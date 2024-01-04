@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 buildscript {
@@ -16,7 +17,6 @@ buildscript {
     dependencies {
         // Android Gradle Plugin アップデート
         classpath ("com.android.tools.build:gradle:8.2.0")
-//        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
     }
 }
 
@@ -105,4 +105,7 @@ dependencies {
 //    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     // JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    // SLF4J
+    implementation("org.slf4j:slf4j-api:1.7.36")
+    implementation("ch.qos.logback:logback-classic:1.2.6")
 }

@@ -53,7 +53,7 @@ class MainActivity() : ComponentActivity(), Parcelable {
             //コントローラ
             val navController = rememberNavController()
             val navigation = Navigation()
-            navigation.navGraphApp(navController)
+            navigation.NavGraphApp(navController)
         }
     }
 

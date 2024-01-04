@@ -10,6 +10,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+// 共通の Json インスタンスを作成
+private val json = Json { ignoreUnknownKeys = true }
 
 // 近くのレストランを取得する関数
 suspend fun getNearbyRestaurants(
@@ -26,31 +28,30 @@ suspend fun getNearbyRestaurants(
             "&type=restaurant" +
             "&key=$apiKey"
 
-    // Ktor HttpClientを作成
-    val client = HttpClient()
+    return@runBlocking HttpClient().use { client ->
+        try {
+            // HTTPリクエストを送信してHttpResponseを取得
+            val response: HttpResponse = client.get(url)
 
-    try {
-        // HTTPリクエストを送信してHttpResponseを取得
-        val response: HttpResponse = client.get(url)
+            // HttpResponseから文字列を取得
+            val responseString: String = response.bodyAsText()
 
-        // HttpResponseから文字列を取得
-        val responseString: String = response.bodyAsText()
+            // 結果からレストラン情報を抽出
+            val results = json.decodeFromString<GooglePlacesResponse>(responseString).results
+            val restaurants = mutableListOf<Restaurant>()
 
-        // 結果からレストラン情報を抽出
-        val results = Json { ignoreUnknownKeys = true }.decodeFromString<GooglePlacesResponse>(responseString).results
-        val restaurants = mutableListOf<Restaurant>()
+            for (place in results) {
+                val name = place.name
+                val vicinity = place.vicinity
 
-        for (place in results) {
-            val name = place.name
-            val vicinity = place.vicinity
+                restaurants.add(Restaurant(name, vicinity))
+            }
 
-            restaurants.add(Restaurant(name, vicinity))
+            return@use restaurants
+        } finally {
+            // HttpClientをクローズ
+            // このブロック内で非同期処理を行っていないため、use ブロック内で実行可能
         }
-
-        return@runBlocking restaurants
-    } finally {
-        // HttpClientをクローズ
-        client.close()
     }
 }
 

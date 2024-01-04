@@ -5,6 +5,8 @@
     <!-- 位置情報のパーミッションを追加 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- ネットワークアクセスの許可 -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
             android:allowBackup="true"

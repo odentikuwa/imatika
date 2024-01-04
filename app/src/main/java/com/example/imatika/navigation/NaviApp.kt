@@ -4,11 +4,9 @@ package com.example.imatika.navigation
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -36,16 +34,16 @@ import kotlinx.coroutines.withContext
 
 class Navigation {
     @Composable
-    fun navGraphApp(navController: NavHostController) {
+    fun NavGraphApp(navController: NavHostController) {
         NavHost(navController, startDestination = "firstScreen") {
             val text: String = "イマ\nチカ"
-            composable("firstScreen") { greeting(text, navController) }
-            composable("secondScreen") { secondScreen() }
+            composable("firstScreen") { Greeting(text, navController) }
+            composable("secondScreen") { SecondScreen() }
         }
     }
 
     @Composable
-    fun greeting(text: String, navController: NavHostController, modifier: Modifier = Modifier) {
+    fun Greeting(text: String, navController: NavHostController, modifier: Modifier = Modifier) {
         Text(
             text = text,
             // クリック時
@@ -65,9 +63,8 @@ class Navigation {
         )
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     @Composable
-    fun secondScreen() {
+    fun SecondScreen() {
         var location by remember { mutableStateOf("") }
         val context = LocalContext.current
         var permissionGranted by remember { mutableStateOf(false) }
@@ -124,12 +121,17 @@ class Navigation {
                 Log.d("SecondScreen", "UI更新false")
             }
         }
-        // UI を表示
-        Column {
-            Text(text = location)
-            // 周辺のグルメ情報を一覧表示
-            restaurantList(restaurants)
+
+        //パーミッションの許可・未許可でUI表示内容を切り替える
+        if (permissionGranted) {
+            RestaurantList(restaurants)
+        } else {
+            // UI を表示
+            Column {
+                Text(text = location)
+            }
         }
+
     }
 
     // 非同期処理を行うsuspend関数
@@ -158,7 +160,7 @@ class Navigation {
 
     // RestaurantList コンポーネント
     @Composable
-    fun restaurantList(restaurants: List<Restaurant>) {
+    fun RestaurantList(restaurants: List<Restaurant>) {
         LazyColumn {
             items(restaurants) { restaurant ->
                 RestaurantItem(restaurant = restaurant)
