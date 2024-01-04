@@ -7,8 +7,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
@@ -25,27 +27,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
+import com.example.imatika.model.Restaurant
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import com.example.imatika.model.Restaurant
 
 class Navigation {
     @Composable
-    fun NavGraphApp(navController: NavHostController) {
+    fun navGraphApp(navController: NavHostController) {
         NavHost(navController, startDestination = "firstScreen") {
             val text: String = "イマ\nチカ"
-            composable("firstScreen") { Greeting(text, navController) }
-            composable("secondScreen") { SecondScreen() }
+            composable("firstScreen") { greeting(text, navController) }
+            composable("secondScreen") { secondScreen() }
         }
     }
 
     @Composable
-    fun Greeting(text: String, navController: NavHostController, modifier: Modifier = Modifier) {
+    fun greeting(text: String, navController: NavHostController, modifier: Modifier = Modifier) {
         Text(
             text = text,
             // クリック時
@@ -67,7 +66,7 @@ class Navigation {
 
     @RequiresApi(Build.VERSION_CODES.M)
     @Composable
-    fun SecondScreen() {
+    fun secondScreen() {
         var location by remember { mutableStateOf("") }
         val context = LocalContext.current
         var permissionGranted by remember { mutableStateOf(false) }
@@ -128,7 +127,7 @@ class Navigation {
         Column {
             Text(text = location)
             // 周辺のグルメ情報を一覧表示
-            RestaurantList(restaurants)
+//            RestaurantList(restaurants)
         }
     }
 
@@ -156,15 +155,28 @@ class Navigation {
         }
     }
 
-    @Composable
-    fun RestaurantList(restaurants: List<Restaurant>) {
-        // ここにグルメ情報の一覧表示の UI コンポーネントを実装
-        // restaurants リストを受け取って、それぞれのレストランの情報を表示する
-        LazyColumn {
-            items(restaurants) { restaurant ->
-                Text(text = "${restaurant.name} - ${restaurant.vicinity}")
-            }
-        }
-    }
+//    // RestaurantList コンポーネント
+//    @Composable
+//    fun RestaurantList(restaurants: List<Restaurant>) {
+//        LazyColumn {
+//            items(restaurants) { restaurant ->
+//                RestaurantItem(restaurant = restaurant)
+//            }
+//        }
+//    }
+//
+//    // RestaurantItem コンポーネント
+//    @Composable
+//    fun RestaurantItem(restaurant: Restaurant) {
+//        // 各レストランの情報を表示する UI コンポーネントを実装
+//        Column(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp)
+//        ) {
+//            Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+//            Text(text = restaurant.vicinity, fontSize = 14.sp)
+//        }
+//    }
 }
 

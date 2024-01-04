@@ -15,8 +15,8 @@ buildscript {
     }
     dependencies {
         // Android Gradle Plugin アップデート
-        classpath ("com.android.tools.build:gradle:7.1.0")
-        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
+        classpath ("com.android.tools.build:gradle:8.2.0")
+//        classpath ("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.22")
     }
 }
 
@@ -56,17 +56,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        compose = true
-        // Kotlin Android Extensionsを有効にする
-        viewBinding = true
-    }
     composeOptions {
 
         kotlinCompilerExtensionVersion = "1.4.3"
     }
 
     buildFeatures {
+        compose = true
         viewBinding = true // これで viewBinding が有効になります
     }
 }
@@ -106,7 +102,7 @@ dependencies {
     implementation("io.ktor:ktor-client-android:$version")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
     // Kotlinプラグイン
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+//    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     // JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
