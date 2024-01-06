@@ -2,12 +2,12 @@ package com.example.imatika.navigation
 
 import android.content.Context
 import com.example.imatika.R
+import com.example.imatika.model.GooglePlacesResponse
 import com.example.imatika.model.Restaurant
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 // 共通の Json インスタンスを作成
@@ -26,8 +26,8 @@ suspend fun getNearbyRestaurants(
             "?location=$latitude,$longitude" +
             "&radius=$radius" +
             "&type=restaurant" +
-            "&key=$apiKey"
-//            "&language=ja" // 日本語を指定
+            "&key=$apiKey" +
+            "&language=ja" // APIのレスポンスが日本語で返されるかどうかは、Google Placesに登録されたデータ次第
 
     return@runBlocking HttpClient().use { client ->
         try {
@@ -56,19 +56,4 @@ suspend fun getNearbyRestaurants(
     }
 }
 
-// Google Places APIのレスポンスを表すデータクラス
-@Serializable
-data class GooglePlacesResponse(
-    val results: List<Place>
-)
 
-@Serializable
-data class Place(
-    val name: String,
-    val vicinity: String
-)
-
-data class Restaurant(
-    val name: String,
-    val vicinity: String
-)

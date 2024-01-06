@@ -7,14 +7,20 @@ import android.content.pm.PackageManager
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -161,9 +167,10 @@ class Navigation {
     // RestaurantList コンポーネント
     @Composable
     fun RestaurantList(restaurants: List<Restaurant>) {
-        LazyColumn {
+        //リストを水平にスクロール
+        LazyRow {
             items(restaurants) { restaurant ->
-                RestaurantItem(restaurant = restaurant)
+                RestaurantItem(restaurant)
             }
         }
     }
@@ -172,13 +179,40 @@ class Navigation {
     @Composable
     fun RestaurantItem(restaurant: Restaurant) {
         // 各レストランの情報を表示する UI コンポーネントを実装
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .width(400.dp) // 各アイテムの横幅を設定
+                .height(150.dp) // 各アイテムの縦幅を設定
+                .padding(20.dp)
+                .clip(RoundedCornerShape(18.dp)) // 角を丸くする
+                .background(Color.Cyan) // 背景色を水色に設定
         ) {
-            Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Text(text = restaurant.vicinity, fontSize = 14.sp)
+            val padding = 16.dp
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Spacer(Modifier.size(padding)) // paddingを16dpに設定
+//                    Spacer(modifier = Modifier.width(16.dp)) // 文字とアイテムの水平方向の間隔を16dpに設定
+                    Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp,modifier = Modifier.padding(start = 16.dp))
+                    Text(text = restaurant.vicinity, fontSize = 14.sp,modifier = Modifier.padding(start = 16.dp))
+                }
+            }
+            // 白い右向きの三角形アイコン
+            Row(
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowForward,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(24.dp)
+                )
+            }
         }
     }
 }
