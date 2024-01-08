@@ -75,6 +75,8 @@ class Navigation {
         val context = LocalContext.current
         var permissionGranted by remember { mutableStateOf(false) }
         var restaurants by remember { mutableStateOf(emptyList<Restaurant>()) }
+        var latitude by remember { mutableStateOf(0.0) }
+        var longitude by remember { mutableStateOf(0.0) }
 
         // パーミッションのリクエスト
         val requestPermissionLauncher = rememberLauncherForActivityResult(
@@ -108,13 +110,13 @@ class Navigation {
                         val latitudeRegex = Regex("緯度: ([^,]+)")
                         val latitudeMatch = latitudeRegex.find(result)
                         val latitudeString = latitudeMatch?.groups?.get(1)?.value
-                        val latitude: Double = latitudeString?.toDouble() ?: 0.0
+                        latitude = latitudeString?.toDouble() ?: 0.0
 
                         // 経度の取得
                         val longitudeRegex = Regex("経度: ([^,]+)")
                         val longitudeMatch = longitudeRegex.find(result)
                         val longitudeString = longitudeMatch?.groups?.get(1)?.value
-                        val longitude: Double = longitudeString?.toDouble() ?: 0.0
+                        longitude = longitudeString?.toDouble() ?: 0.0
 
                         // 周辺のグルメ情報を取得
                         restaurants = getNearbyRestaurants(context = context, latitude = latitude,longitude = longitude)
@@ -128,13 +130,18 @@ class Navigation {
             }
         }
 
-        //パーミッションの許可・未許可でUI表示内容を切り替える
-        if (permissionGranted) {
-            RestaurantList(restaurants)
-        } else {
-            // UI を表示
-            Column {
-                Text(text = location)
+        // UIを表示
+        Column {
+            //パーミッションの許可・未許可でUI表示内容を切り替える
+            if (permissionGranted) {
+                // GoogleMapComponentのUIを表示
+                GetGoogleMapComponent(context = context, latitude = latitude, longitude = longitude)
+                RestaurantList(restaurants)
+            } else {
+                // UI を表示
+                Column {
+                    Text(text = location)
+                }
             }
         }
 
@@ -185,7 +192,7 @@ class Navigation {
                 .height(150.dp) // 各アイテムの縦幅を設定
                 .padding(20.dp)
                 .clip(RoundedCornerShape(18.dp)) // 角を丸くする
-                .background(Color.Cyan) // 背景色を水色に設定
+                .background(Color.Cyan.copy(alpha = 0.5f)) // 背景色を水色に設定し、透明度を指定
         ) {
             val padding = 16.dp
             Row(
