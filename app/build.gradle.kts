@@ -9,6 +9,8 @@ plugins {
 
 buildscript {
     repositories {
+        gradlePluginPortal()
+        google()
         mavenCentral()  // 追加
         maven {
             url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
@@ -84,6 +86,7 @@ dependencies {
     // Google Play Services Location APIを追加
     implementation ("com.google.android.gms:play-services-location:21.0.1")
     implementation ("com.google.maps.android:maps-ktx:3.2.0")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.android.support:support-annotations:28.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
