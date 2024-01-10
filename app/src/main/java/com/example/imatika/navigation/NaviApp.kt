@@ -130,18 +130,22 @@ class Navigation {
             }
         }
 
-        // UIを表示
-        Column {
-            //パーミッションの許可・未許可でUI表示内容を切り替える
-            if (permissionGranted) {
+        //パーミッションの許可・未許可でUI表示内容を切り替える
+        if (permissionGranted) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+            ) {
                 // GoogleMapComponentのUIを表示
                 GetGoogleMapComponent(context = context, latitude = latitude, longitude = longitude)
+                // RestaurantListのUIを表示
                 RestaurantList(restaurants)
-            } else {
-                // UI を表示
-                Column {
-                    Text(text = location)
-                }
+            }
+        } else {
+            // UI を表示
+            Column {
+                Text(text = location)
             }
         }
 
@@ -192,7 +196,7 @@ class Navigation {
                 .height(150.dp) // 各アイテムの縦幅を設定
                 .padding(20.dp)
                 .clip(RoundedCornerShape(18.dp)) // 角を丸くする
-                .background(Color.Cyan.copy(alpha = 0.5f)) // 背景色を水色に設定し、透明度を指定
+                .background(Color.Cyan.copy(alpha = 0.7f)) // 背景色を水色に設定し、透明度を指定
         ) {
             val padding = 16.dp
             Row(
