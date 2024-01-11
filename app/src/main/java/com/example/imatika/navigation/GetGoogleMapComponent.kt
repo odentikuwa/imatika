@@ -68,7 +68,7 @@ fun GetGoogleMapComponent(
             locationMarker?.remove()
             locationMarker = map.addMarker(
                 MarkerOptions().position(latLng).title("現在地").icon(
-                    BitmapDescriptorFactory.fromBitmap(getBlueCircleBitmap())
+                    BitmapDescriptorFactory.fromBitmap(getBlueCircleBitmap(context))
                 )
             )
             // その他の地図の設定はここに追加できます
@@ -121,9 +121,13 @@ class MapViewLifecycleObserver(private val mapView: MapView) : LifecycleEventObs
 //円の描画内容
 //BitmapではなくImageBitmapを使用するのが適切
 //Androidの通常のUI描画
-fun getBlueCircleBitmap(): Bitmap {
+fun getBlueCircleBitmap(context: Context): Bitmap {
     val diameter = 50 // 円の直径
-    val bitmap = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888)
+    //Contextパラメータを受け入れ、それを使用してディスプレイメトリクスの密度を取得
+    val density = context.resources.displayMetrics.density
+//    val bitmap = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888)
+    //Contextパラメータ使用により、画面の密度に合わせて円のサイズを調整可能
+    val bitmap = Bitmap.createBitmap((diameter * density).toInt(), (diameter * density).toInt(), Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
 
     // 円を描画

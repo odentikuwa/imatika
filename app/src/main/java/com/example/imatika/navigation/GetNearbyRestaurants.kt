@@ -16,8 +16,8 @@ private val json = Json { ignoreUnknownKeys = true }
 // 近くのレストランを取得する関数
 suspend fun getNearbyRestaurants(
     context: Context, // contextをパラメータとして渡す
-    latitude: Double,
-    longitude: Double,
+    latitude: Double, // 緯度
+    longitude: Double, // 経度
     radius: Int = 1000, //円の半径をメートル単位で指定
 ): List<Restaurant> = runBlocking {
     // Google Places APIキー
@@ -44,8 +44,10 @@ suspend fun getNearbyRestaurants(
             for (place in results) {
                 val name = place.name
                 val vicinity = place.vicinity
+                val localLatitude = place.geometry.location.lat
+                val localLongitude = place.geometry.location.lng
 
-                restaurants.add(Restaurant(name, vicinity))
+                restaurants.add(Restaurant(name, vicinity, localLatitude, localLongitude))
             }
 
             return@use restaurants
