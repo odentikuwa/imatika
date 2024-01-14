@@ -112,6 +112,7 @@ class Navigation {
                         val latitudeString = latitudeMatch?.groups?.get(1)?.value
                         latitude = latitudeString?.toDouble() ?: 0.0
 
+
                         // 経度の取得
                         val longitudeRegex = Regex("経度: ([^,]+)")
                         val longitudeMatch = longitudeRegex.find(result)
@@ -130,6 +131,9 @@ class Navigation {
             }
         }
 
+        // GetGoogleMapComponent の位置をstateで管理
+        var mapLocation by remember { mutableStateOf(Pair(0.0, 0.0)) }
+
         //パーミッションの許可・未許可でUI表示内容を切り替える
         if (permissionGranted) {
             Box(
@@ -137,10 +141,20 @@ class Navigation {
                     .fillMaxSize()
                     .background(Color.White)
             ) {
+                //値が0.0dでなければmapLocationを使用する
+                val mapLatitude = if (mapLocation.first != 0.0) mapLocation.first else latitude
+                val mapLongitude = if (mapLocation.second != 0.0) mapLocation.second else longitude
                 // GoogleMapComponentのUIを表示
-                GetGoogleMapComponent(context = context, latitude = latitude, longitude = longitude)
+                GetGoogleMapComponent(
+                    context = context,
+                    latitude = mapLatitude,
+                    longitude = mapLongitude
+                )
                 // RestaurantListのUIを表示
-                RestaurantList(restaurants)
+                RestaurantList(restaurants = restaurants, onRestaurantClick = { latitude, longitude ->
+                    // レストランアイテムがクリックされたら、緯度経度情報を更新
+                    mapLocation = Pair(latitude, longitude)
+                })
             }
         } else {
             // UI を表示
@@ -148,7 +162,6 @@ class Navigation {
                 Text(text = location)
             }
         }
-
     }
 
     // 非同期処理を行うsuspend関数
@@ -177,18 +190,24 @@ class Navigation {
 
     // RestaurantList コンポーネント
     @Composable
-    fun RestaurantList(restaurants: List<Restaurant>) {
+    fun RestaurantList(
+        restaurants: List<Restaurant>,
+        onRestaurantClick: (Double, Double) -> Unit
+    ) {
         //リストを水平にスクロール
         LazyRow {
             items(restaurants) { restaurant ->
-                RestaurantItem(restaurant)
+                RestaurantItem(restaurant) {
+                    // レストランアイテムがクリックされたら、緯度経度情報を渡してコールバックを呼ぶ
+                    onRestaurantClick(restaurant.latitude, restaurant.longitude)
+                }
             }
         }
     }
 
     // RestaurantItem コンポーネント
     @Composable
-    fun RestaurantItem(restaurant: Restaurant) {
+    fun RestaurantItem(restaurant: Restaurant, onItemClicked: () -> Unit) {
         // 各レストランの情報を表示する UI コンポーネントを実装
         Box(
             modifier = Modifier
@@ -197,6 +216,7 @@ class Navigation {
                 .padding(20.dp)
                 .clip(RoundedCornerShape(18.dp)) // 角を丸くする
                 .background(Color.Cyan.copy(alpha = 0.7f)) // 背景色を水色に設定し、透明度を指定
+                .clickable { onItemClicked() } // レストランアイテムがクリックされたら、緯度経度情報を渡す
         ) {
             val padding = 16.dp
             Row(
@@ -207,7 +227,6 @@ class Navigation {
                     modifier = Modifier.weight(1f)
                 ) {
                     Spacer(Modifier.size(padding)) // paddingを16dpに設定
-//                    Spacer(modifier = Modifier.width(16.dp)) // 文字とアイテムの水平方向の間隔を16dpに設定
                     Text(text = restaurant.name, fontWeight = FontWeight.Bold, fontSize = 18.sp,modifier = Modifier.padding(start = 16.dp))
                     Text(text = restaurant.vicinity, fontSize = 14.sp,modifier = Modifier.padding(start = 16.dp))
                 }

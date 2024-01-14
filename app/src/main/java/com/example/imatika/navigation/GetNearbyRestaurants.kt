@@ -51,11 +51,13 @@ suspend fun getNearbyRestaurants(
             }
 
             return@use restaurants
+        } catch (e: Exception) {
+            // エラーが発生した場合のログ出力
+            println("Error in getNearbyRestaurants: ${e.message}")
+            throw e // 例外を再スローして外部で処理できるようにする
         } finally {
             // HttpClientをクローズ
-            // このブロック内で非同期処理を行っていないため、use ブロック内で実行可能
+            client.close()
         }
     }
 }
-
-
