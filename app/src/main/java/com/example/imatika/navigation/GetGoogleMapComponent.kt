@@ -32,6 +32,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import com.example.imatika.model.Restaurant
 import com.google.maps.android.ktx.awaitMap
 import kotlinx.coroutines.launch
 
@@ -42,14 +43,12 @@ private var locationMarker: Marker? = null
  * Google マップコンポーネントを表示する Composable 関数。
  *
  * @param context 関数に渡すコンテキスト パラメータ。
- * @param latitude マップ上に表示する場所の緯度。
- * @param longitude マップ上に表示する場所の経度。
+ * @param restaurant マップ上に表示するレストラン情報。
  */
 @Composable
 fun GetGoogleMapComponent(
     context: Context, // contextをパラメータとして渡す
-    latitude: Double,
-    longitude: Double
+    restaurant: Restaurant
 ) {
     // LocalContextを使わずにライフサイクルを取得
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -61,17 +60,18 @@ fun GetGoogleMapComponent(
         // マップが準備できたときのコールバック
         googleMap.getMapAsync { map ->
             // カメラを指定された場所に移動
-            val latLng = LatLng(latitude, longitude)
+            val latLng = LatLng(restaurant.latitude, restaurant.longitude)
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
 
             // 現在地の青い点を表示
             locationMarker?.remove()
             locationMarker = map.addMarker(
-                MarkerOptions().position(latLng).title("現在地").icon(
+                // アイコン設定
+                MarkerOptions().position(latLng).title(restaurant.name).icon(
                     BitmapDescriptorFactory.fromBitmap(getBlueCircleBitmap(context))
                 )
             )
-            // その他の地図の設定はここに追加できます
+            // その他の地図の設定はここに追加
         }
     }
 }

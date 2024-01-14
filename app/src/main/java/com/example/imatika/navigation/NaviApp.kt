@@ -133,7 +133,7 @@ class Navigation {
         }
 
         // GetGoogleMapComponent の位置をstateで管理
-        var mapLocation by remember { mutableStateOf(Pair(0.0, 0.0)) }
+        var mapRestaurant by remember { mutableStateOf(Restaurant("", "", 0.0, 0.0)) }
 
         //パーミッションの許可・未許可でUI表示内容を切り替える
         if (permissionGranted) {
@@ -142,19 +142,21 @@ class Navigation {
                     .fillMaxSize()
                     .background(Color.White)
             ) {
-                //値が0.0dでなければmapLocationを使用する
-                val mapLatitude = if (mapLocation.first != 0.0) mapLocation.first else latitude
-                val mapLongitude = if (mapLocation.second != 0.0) mapLocation.second else longitude
+                //値が初期値でなければmapRestaurantを使用する
+//                val mapLatitude = if (mapLocation.first != 0.0) mapLocation.first else latitude
+//                val mapLongitude = if (mapLocation.second != 0.0) mapLocation.second else longitude
+                mapRestaurant.name = if (mapRestaurant.name != "") mapRestaurant.name else "現在地"
+                mapRestaurant.latitude = if (mapRestaurant.latitude != 0.0) mapRestaurant.latitude else latitude
+                mapRestaurant.longitude = if (mapRestaurant.longitude != 0.0) mapRestaurant.longitude else longitude
                 // GoogleMapComponentのUIを表示
                 GetGoogleMapComponent(
                     context = context,
-                    latitude = mapLatitude,
-                    longitude = mapLongitude
+                    restaurant = mapRestaurant
                 )
                 // RestaurantListのUIを表示
-                RestaurantList(restaurants = restaurants, onRestaurantClick = { latitude, longitude ->
+                RestaurantList(restaurants = restaurants, onRestaurantClick = { restaurant ->
                     // レストランアイテムがクリックされたら、緯度経度情報を更新
-                    mapLocation = Pair(latitude, longitude)
+                    mapRestaurant = restaurant
                 })
             }
         } else {
@@ -193,7 +195,7 @@ class Navigation {
     @Composable
     fun RestaurantList(
         restaurants: List<Restaurant>,
-        onRestaurantClick: (Double, Double) -> Unit
+        onRestaurantClick: (Restaurant) -> Unit
     ) {
         //リストを水平にスクロール
         LazyRow {
@@ -202,7 +204,7 @@ class Navigation {
                 // RestaurantItemを呼び出すときにアイテムインデックスのラストインデックスを渡す
                 RestaurantItem(restaurant, index == restaurants.lastIndex) {
                     // レストランアイテムがクリックされたら、緯度経度情報を渡してコールバックを呼ぶ
-                    onRestaurantClick(restaurant.latitude, restaurant.longitude)
+                    onRestaurantClick(restaurant)
                 }
             }
         }

@@ -3,10 +3,10 @@ package com.example.imatika.model
 import kotlinx.serialization.Serializable
 
 data class Restaurant(
-    val name: String,
+    var name: String,
     val vicinity: String,
-    val latitude: Double,
-    val longitude: Double
+    var latitude: Double,
+    var longitude: Double
 )
 
 // Google Places APIのレスポンスを表すデータクラス
