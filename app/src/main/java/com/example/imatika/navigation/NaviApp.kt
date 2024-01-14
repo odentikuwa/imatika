@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -196,8 +197,10 @@ class Navigation {
     ) {
         //リストを水平にスクロール
         LazyRow {
-            items(restaurants) { restaurant ->
-                RestaurantItem(restaurant) {
+            // アイテムインデックスを使用して表示を管理
+            itemsIndexed(restaurants) { index, restaurant ->
+                // RestaurantItemを呼び出すときにアイテムインデックスのラストインデックスを渡す
+                RestaurantItem(restaurant, index == restaurants.lastIndex) {
                     // レストランアイテムがクリックされたら、緯度経度情報を渡してコールバックを呼ぶ
                     onRestaurantClick(restaurant.latitude, restaurant.longitude)
                 }
@@ -207,7 +210,7 @@ class Navigation {
 
     // RestaurantItem コンポーネント
     @Composable
-    fun RestaurantItem(restaurant: Restaurant, onItemClicked: () -> Unit) {
+    fun RestaurantItem(restaurant: Restaurant, isLastItem: Boolean, onItemClicked: () -> Unit) {
         // 各レストランの情報を表示する UI コンポーネントを実装
         Box(
             modifier = Modifier
@@ -232,16 +235,18 @@ class Navigation {
                 }
             }
             // 白い右向きの三角形アイコン
-            Row(
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowForward,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(24.dp)
-                )
+            if (!isLastItem) {
+                Row(
+                    modifier = Modifier.align(Alignment.CenterEnd)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowForward,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier
+                            .size(24.dp)
+                    )
+                }
             }
         }
     }
