@@ -70,6 +70,7 @@ class Navigation {
         )
     }
 
+    // mac お試しpush
     @Composable
     fun SecondScreen() {
         var location by remember { mutableStateOf("") }
